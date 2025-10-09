@@ -15,9 +15,10 @@ import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonWriter;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 
 public class Assets {
     public static AssetManager manager = new AssetManager();
@@ -242,28 +243,29 @@ public class Assets {
     }
 
     private static void parseRecord() {
-        String jsonData = Gdx.files.internal("config.json").readString();
+        try {
+            if (!Gdx.files.internal("config.json").exists()) {
+                record = 0;
+                return;
+            }
 
-        JsonReader jsonReader = new JsonReader();
-        System.out.println(jsonData);
-        JsonValue root = jsonReader.parse(jsonData);
-        if (root != null)
-            record = root.get("record").asInt();
-        else record = 0;
-        jsonReader.stop();
+            String json = Gdx.files.internal("config.json").readString();
+            JsonValue jsonValue = new JsonReader().parse(json);
+            record = jsonValue.getInt("record", 0);
+        } catch (Exception e) {
+            record = 0;
+            System.err.println("Error reading record: " + e.getMessage());
+        }
     }
 
     private static void saveRecord() {
-        FileHandle file = Gdx.files.local("config.json");
-
         try {
-            JsonWriter writer = new JsonWriter(file.writer(false));
-            writer.setOutputType(JsonWriter.OutputType.json);
-            writer.object();
-            writer.set("record", record);
-            writer.pop();
-        } catch (IOException e) {
-            Gdx.app.error("JSON", "Ошибка записи в файл", e);
+            JsonValue jsonValue = new JsonValue(JsonValue.ValueType.object);
+            jsonValue.addChild("record", new JsonValue(record));
+            Gdx.files.local("config.json").writeString(jsonValue.toJson(JsonWriter.OutputType.json), false);
+
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to save record", e);
         }
     }
 

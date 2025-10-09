@@ -101,7 +101,7 @@ public class WorkScreen implements Screen {
         escapeButtonsTable.add(exitButton).width(buttonGeneralSize.x).height(buttonGeneralSize.y).pad(20).row();
 
         pauseStage.addActor(escapeButtonsTable);
-        pauseStage.setDebugAll(true);
+//        pauseStage.setDebugAll(true);
     }
 
     protected void setUpGameMenu(Vector2 buttonGeneralSize, Vector2 buttonSmallSize, Vector2 screenResolution) {
@@ -162,7 +162,7 @@ public class WorkScreen implements Screen {
         }
         gameStage.addActor(guideBook);
         gameStage.addActor(guideBook.returnButtons());
-        gameStage.setDebugAll(true);
+//        gameStage.setDebugAll(true);
     }
 
     protected void updateGameStage() {
@@ -176,15 +176,15 @@ public class WorkScreen implements Screen {
         }
         gameStage.addActor(guideBook);
         gameStage.addActor(guideBook.returnButtons());
-        gameStage.setDebugAll(true);
+//        gameStage.setDebugAll(true);
     }
 
     public void setInputProcessor() {
         if (isPaused) {
-            Gdx.input.setInputProcessor(pauseStage);
+            game.setUpInputProcessor(pauseStage);
         }
         else {
-            Gdx.input.setInputProcessor(gameStage);
+            game.setUpInputProcessor(gameStage);
         }
     }
 

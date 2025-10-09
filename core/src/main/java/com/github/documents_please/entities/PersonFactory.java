@@ -221,7 +221,7 @@ public class PersonFactory {
         person.setInvite(name, gender, purpose, howLong, validUntilInvite, id, stamp, addedStamp);
         person.setVaccination(name, surname, disease, dateVaccination, stamp);
 
-        boolean isValid = (MathUtils.random(0, 100) > 30);
+        boolean isValid = (MathUtils.random(0, 100) > 40);
         if (!isValid) {
             for (int i = 1; i <= MathUtils.random(1, 3); i++) {
                 makeInvalid(i, person, gender, stampIdx, stamp, name, nameIdx,surname, surnameIdx, address, id, age,
