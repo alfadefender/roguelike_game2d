@@ -33,6 +33,8 @@ public class Assets {
     public static Texture invitePermissionTextureIcon;
     public static Texture vaccinationTexture;
     public static Texture vaccinationTextureIcon;
+    public static Texture historyTexture;
+    public static Texture historyTextureIcon;
 
     public static Array<Texture> guideBook;
     public static Texture guideBookIcon;
@@ -74,6 +76,8 @@ public class Assets {
         manager.load("invite_icon.png", Texture.class);
         manager.load("vaccination.png", Texture.class);
         manager.load("vaccination_icon.png", Texture.class);
+        manager.load("history_page.png", Texture.class);
+        manager.load("history_icon.png", Texture.class);
 
         manager.load("stamp1.png", Texture.class);
         manager.load("stamp2.png", Texture.class);
@@ -107,6 +111,8 @@ public class Assets {
         invitePermissionTextureIcon = manager.get("invite_icon.png", Texture.class);
         vaccinationTexture = manager.get("vaccination.png", Texture.class);
         vaccinationTextureIcon = manager.get("vaccination_icon.png", Texture.class);
+        historyTexture = manager.get("history_page.png", Texture.class);
+        historyTextureIcon = manager.get("history_icon.png", Texture.class);
 
         stamps = new Array<>();
 
@@ -279,6 +285,8 @@ public class Assets {
         invitePermissionTextureIcon.dispose();
         vaccinationTexture.dispose();
         vaccinationTextureIcon.dispose();
+        historyTexture.dispose();
+        historyTextureIcon.dispose();
         mainFont.dispose();
         saveRecord();
     }
