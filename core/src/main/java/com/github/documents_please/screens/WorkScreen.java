@@ -27,11 +27,14 @@ public class WorkScreen implements Screen {
     private boolean isPaused;
 
     private Person currentPerson;
+    private Person previuosPerson;
     private PersonFactory personFactory;
     private GuideBook guideBook;
     private DocumentText date;
     private DocumentText records;
     private String recordsText;
+    private DocumentText reasonToDecline;
+    private String reasonToDeclineText;
 
     private Table menuButtonsTable;
     private TextButton pauseGameButton;
@@ -58,6 +61,7 @@ public class WorkScreen implements Screen {
         money = 0;
 
         personFactory = new PersonFactory(day, month, year);
+        previuosPerson = null;
         currentPerson = personFactory.getNewPerson(2);
 
         guideBook = new GuideBook();
@@ -67,6 +71,10 @@ public class WorkScreen implements Screen {
         recordsText = "Очки: " + money + "\nРекорд: " + Assets.record;
         records = new DocumentText(recordsText,
             new Label.LabelStyle(Assets.mainFont, new Color(1, 1, 0, 1)), 100, 300);
+
+        reasonToDeclineText = "";
+        reasonToDecline = new DocumentText(reasonToDeclineText,
+            new Label.LabelStyle(Assets.mainFont, new Color(1, 1, 0, 1)), 100, 260);
 
         // собираем меню паузы
         setUpPauseMenu(buttonGeneralSize, buttonSmallSize, screenResolution);
@@ -117,32 +125,60 @@ public class WorkScreen implements Screen {
         approvedButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                approvedButton.setDisabled(true);
-                if (currentPerson.isValid()) money += MathUtils.random(4, 7);
-                else money -= MathUtils.random(4, 7);
-                if (currentPerson != null) currentPerson.setState(1);
+                if (previuosPerson != currentPerson) {
+                    if (currentPerson.isValid()) {
+                        money += MathUtils.random(4, 7);
+                        reasonToDecline.setText("");
+                    }
+                    else {
+                        money -= MathUtils.random(8, 12);
+                        reasonToDeclineText = currentPerson.getReasonToDecline();
+                        reasonToDecline.setText(reasonToDeclineText);
+                    }
+                    if (currentPerson != null) currentPerson.setState(1);
 
-                if (Assets.record < money) {
-                    Assets.record = money;
+                    previuosPerson = currentPerson;
+
+                    if (money < 0) {
+                        money = 0;
+                    }
+
+                    if (Assets.record < money) {
+                        Assets.record = money;
+                    }
+                    recordsText = "Очки: " + money + "\nРекорд: " + Assets.record;
+                    records.setText(recordsText);
                 }
-                recordsText = "Очки: " + money + "\nРекорд: " + Assets.record;
-                records.setText(recordsText);
             }
         });
         TextButton discardButton = new TextButton("Отклонить", Assets.buttonSkin, "default");
         discardButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                discardButton.setDisabled(true);
-                if (!currentPerson.isValid()) money += MathUtils.random(4, 7);
-                else money -= MathUtils.random(4, 7);
-                if (currentPerson != null) currentPerson.setState(-1);
+                if (previuosPerson != currentPerson){
+                    if (!currentPerson.isValid()) {
+                        money += MathUtils.random(4, 7);
+                        reasonToDecline.setText("");
+                    }
+                    else {
+                        money -= MathUtils.random(8, 12);
+                        reasonToDeclineText = currentPerson.getReasonToDecline();
+                        reasonToDecline.setText(reasonToDeclineText);
+                    }
+                    if (currentPerson != null) currentPerson.setState(-1);
 
-                if (Assets.record < money) {
-                    Assets.record = money;
+                    previuosPerson = currentPerson;
+
+                    if (money < 0) {
+                        money = 0;
+                    }
+
+                    if (Assets.record < money) {
+                        Assets.record = money;
+                    }
+                    recordsText = "Очки: " + money + "\nРекорд: " + Assets.record;
+                    records.setText(recordsText);
                 }
-                recordsText = "Очки: " + money + "\nРекорд: " + Assets.record;
-                records.setText(recordsText);
             }
         });
 
@@ -216,6 +252,7 @@ public class WorkScreen implements Screen {
             gameStage.getBatch().begin();
             records.render(gameStage.getBatch(), 1);
             date.render(gameStage.getBatch(), 1);
+            reasonToDecline.render(gameStage.getBatch(), 1);
             gameStage.getBatch().end();
         }
     }
