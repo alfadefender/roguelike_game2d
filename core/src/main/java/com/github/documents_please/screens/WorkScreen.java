@@ -267,7 +267,6 @@ public class WorkScreen implements Screen {
             gameStage.getBatch().begin();
             records.render(gameStage.getBatch(), 1);
             date.render(gameStage.getBatch(), 1);
-
             reasonToDecline.render(gameStage.getBatch(), 1);
             gameStage.getBatch().end();
         }
