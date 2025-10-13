@@ -39,22 +39,24 @@ public class PersonFactory {
         return startDate.plusDays(randomDays).format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
     }
 
-    private void makeInvalid(int key, Person person, String gender, int stampIdx, Texture stamp, String name, int nameIdx,
+    private void makeInvalid(Person person, String gender, int stampIdx, Texture stamp, String name, int nameIdx,
                              String surname, int surnameIdx, String address, String id, String age, String purpose,
                              String howLong, String disease, String validUntilPassport, String validUntilInvite,
                              String dateVaccination, int countryStampIdx, Texture addedStamp) {
 
-        switch (key) {
+        switch (MathUtils.random(1, 3)) {
             case 1:
                 switch (MathUtils.random(0, 4)) {
                     case 0 -> {
                         if (gender.equals("жен")) {
                             person.setPassport(Assets.femaleNames.get((nameIdx + 1) % Assets.femaleNames.size()),
                                 surname, address, id, age, gender, validUntilPassport, stamp);
+                            person.setReasonToDecline("Некорректное  имя  в  паспорте");
                         }
                         else {
                             person.setPassport(Assets.maleNames.get((nameIdx + 1) % Assets.maleNames.size()),
                                 surname, address, id, age, gender, validUntilPassport, stamp);
+                            person.setReasonToDecline("Некорректное  имя  в  паспорте");
                         }
                     }
 
@@ -62,82 +64,97 @@ public class PersonFactory {
                         if (gender.equals("жен")) {
                             person.setPassport(name, Assets.femaleSurnames.get((surnameIdx + 1) % Assets.femaleSurnames.size()),
                                 address, id, age, gender, validUntilPassport, stamp);
+                            person.setReasonToDecline("Некорректная  фамилия  в  паспорте");
                         }
                         else {
                             person.setPassport(name, Assets.maleSurnames.get((surnameIdx + 1) % Assets.maleSurnames.size()),
                                 address, id, age, gender, validUntilPassport, stamp);
+                            person.setReasonToDecline("Некорректная  фамилия  в  паспорте");
                         }
                     }
 
                     case 2 -> {
                         person.setPassport(name, surname, address, id.substring(3, 5) + id.substring(0, 3),
                             age, gender, validUntilPassport, stamp);
+                        person.setReasonToDecline("Некорректный  идентификатор  паспорта");
                     }
 
                     case 3 -> {
                         if (gender.equals("жен")) {
                             person.setPassport(name, surname, address, id, age, "муж", validUntilPassport, stamp);
+                            person.setReasonToDecline("Неверный  пол  в  паспорте");
                         }
                         else {
                             person.setPassport(name, surname, address, id, age, "жен", validUntilPassport, stamp);
+                            person.setReasonToDecline("Неверный  пол  в  паспорте");
                         }
                     }
                     case 4 -> {
                         person.setPassport(name, surname, address, id, age, "муж",
                             validUntilPassport.substring(3, 5) + "-" + validUntilPassport.substring(0, 2) + validUntilPassport.substring(5), stamp);
+                        person.setReasonToDecline("Паспорт  просрочен");
                     }
                 }
                 break;
 
             case 2:
-                switch (MathUtils.random(0, 5)) {
+                switch (MathUtils.random(0, 4)) {
                     case 0 -> {
                         if (gender.equals("жен")) {
                             person.setInvite(Assets.femaleNames.get((nameIdx + 1) % Assets.femaleNames.size()),
                                 gender, purpose, howLong, validUntilInvite, id, stamp, addedStamp);
+                            person.setReasonToDecline("Некорректное  имя  в  разрешении  на  въезд");
                         }
                         else {
                             person.setInvite(Assets.maleNames.get((nameIdx + 1) % Assets.maleNames.size()),
                                 gender, purpose, howLong, validUntilInvite, id, stamp, addedStamp);
+                            person.setReasonToDecline("Некорректное  имя  в  разрешении  на  въезд");
                         }
                     }
 
                     case 1 -> {
                         if (gender.equals("жен")) {
                             person.setInvite(name, "муж", purpose, howLong, validUntilInvite, id, stamp, addedStamp);
+                            person.setReasonToDecline("Некорректный  пол  в  разрешении  на  въезд");
                         }
                         else {
                             person.setInvite(name, "жен", purpose, howLong, validUntilInvite, id, stamp, addedStamp);
+                            person.setReasonToDecline("Некорректный  пол  в  разрешении  на  въезд");
                         }
                     }
 
                     case 2 -> {
                         person.setInvite(name, gender, purpose, howLong,
                             validUntilInvite.substring(3, 5) + "-" + validUntilInvite.substring(0, 2) + validUntilInvite.substring(5), id, stamp, addedStamp);
+                        person.setReasonToDecline("Разрешение  на  въезд  просрочено");
                     }
 
                     case 3 -> {
                         person.setInvite(name, gender, purpose, howLong, validUntilInvite,
                             id.substring(3, 5) + id.substring(0, 3), stamp, addedStamp);
+                        person.setReasonToDecline("Некорректный  идентификатор  разрешения  на  въезд");
                     }
 
                     case 4 -> {
                         person.setInvite(name, gender, purpose, howLong, validUntilInvite, id, stamp,
                             Assets.stamps.get((countryStampIdx + MathUtils.random(1, Assets.stamps.size - 1)) % Assets.stamps.size));
+                        person.setReasonToDecline("Некорректный  штамп  в  разрешении  на  въезд");
                     }
                 }
                 break;
 
             case 3:
-                switch (MathUtils.random(0, 4)) {
+                switch (MathUtils.random(0, 3)) {
                     case 0 -> {
                         if (gender.equals("жен")) {
                             person.setVaccination(Assets.femaleNames.get((nameIdx + 1) % Assets.femaleNames.size()),
                                 surname, disease, dateVaccination, stamp);
+                            person.setReasonToDecline("Некорректный  пол  в  сертификате  вакцинации");
                         }
                         else {
                             person.setVaccination(Assets.maleNames.get((nameIdx + 1) % Assets.maleNames.size()),
                                 surname, disease, dateVaccination, stamp);
+                            person.setReasonToDecline("Некорректный  пол  в  сертификате  вакцинации");
                         }
                     }
 
@@ -145,21 +162,25 @@ public class PersonFactory {
                         if (gender.equals("жен")) {
                             person.setVaccination(name, Assets.femaleSurnames.get((surnameIdx + 1) % Assets.femaleSurnames.size()),
                                 disease, dateVaccination, stamp);
+                            person.setReasonToDecline("Некорректная  фамилия  в  сертификате  вакцинации");
                         }
                         else {
                             person.setVaccination(name, Assets.maleSurnames.get((surnameIdx + 1) % Assets.maleSurnames.size()),
                                 disease, dateVaccination, stamp);
+                            person.setReasonToDecline("Некорректная  фамилия  в  сертификате  вакцинации");
                         }
                     }
 
                     case 2 -> {
                         person.setVaccination(name, surname, disease,
                             generateRandomDate(year - 2, month, day, year - 1, month, day), stamp);
+                        person.setReasonToDecline("Сертификат  вакцинации  просрочен");
                     }
 
                     case 3 -> {
                         person.setVaccination(name, surname, disease, dateVaccination,
                             Assets.stamps.get((stampIdx + MathUtils.random(1, Assets.stamps.size - 1)) % Assets.stamps.size));
+                        person.setReasonToDecline("Некорректный  штамп  в  сертификате  вакцинации");
                     }
                 }
                 break;
@@ -221,12 +242,12 @@ public class PersonFactory {
         person.setInvite(name, gender, purpose, howLong, validUntilInvite, id, stamp, addedStamp);
         person.setVaccination(name, surname, disease, dateVaccination, stamp);
 
-        boolean isValid = (MathUtils.random(0, 100) > 30);
+        boolean isValid = (MathUtils.random(0, 100) > 40);
         if (!isValid) {
-            for (int i = 1; i <= MathUtils.random(1, 3); i++) {
-                makeInvalid(i, person, gender, stampIdx, stamp, name, nameIdx,surname, surnameIdx, address, id, age,
-                    purpose, howLong, disease, validUntilPassport, validUntilInvite, dateVaccination, countryStampIdx, addedStamp);
-            }
+
+            makeInvalid(person, gender, stampIdx, stamp, name, nameIdx,surname, surnameIdx, address, id, age,
+                purpose, howLong, disease, validUntilPassport, validUntilInvite, dateVaccination, countryStampIdx, addedStamp);
+
         }
 
         return person;

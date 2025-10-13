@@ -18,6 +18,7 @@ import com.github.documents_please.documents.DocumentText;
 import com.github.documents_please.entities.GuideBook;
 import com.github.documents_please.entities.Person;
 import com.github.documents_please.entities.PersonFactory;
+import com.github.documents_please.history.History;
 import com.github.documents_please.resources.Assets;
 
 public class WorkScreen implements Screen {
@@ -27,11 +28,15 @@ public class WorkScreen implements Screen {
     private boolean isPaused;
 
     private Person currentPerson;
+    private Person previuosPerson;
     private PersonFactory personFactory;
     private GuideBook guideBook;
     private DocumentText date;
     private DocumentText records;
     private String recordsText;
+    private DocumentText reasonToDecline;
+    private String reasonToDeclineText;
+    private History history;
 
     private Table menuButtonsTable;
     private TextButton pauseGameButton;
@@ -58,6 +63,7 @@ public class WorkScreen implements Screen {
         money = 0;
 
         personFactory = new PersonFactory(day, month, year);
+        previuosPerson = null;
         currentPerson = personFactory.getNewPerson(2);
 
         guideBook = new GuideBook();
@@ -67,6 +73,12 @@ public class WorkScreen implements Screen {
         recordsText = "Очки: " + money + "\nРекорд: " + Assets.record;
         records = new DocumentText(recordsText,
             new Label.LabelStyle(Assets.mainFont, new Color(1, 1, 0, 1)), 100, 300);
+
+        reasonToDeclineText = "";
+        reasonToDecline = new DocumentText(reasonToDeclineText,
+            new Label.LabelStyle(Assets.mainFont, new Color(1, 1, 0, 1)), 100, 260);
+
+        history = new History(Assets.historyTextureIcon,Assets.historyTexture, 1750, 400, 500, 0);
 
         // собираем меню паузы
         setUpPauseMenu(buttonGeneralSize, buttonSmallSize, screenResolution);
@@ -101,7 +113,7 @@ public class WorkScreen implements Screen {
         escapeButtonsTable.add(exitButton).width(buttonGeneralSize.x).height(buttonGeneralSize.y).pad(20).row();
 
         pauseStage.addActor(escapeButtonsTable);
-        pauseStage.setDebugAll(true);
+//        pauseStage.setDebugAll(true);
     }
 
     protected void setUpGameMenu(Vector2 buttonGeneralSize, Vector2 buttonSmallSize, Vector2 screenResolution) {
@@ -117,32 +129,68 @@ public class WorkScreen implements Screen {
         approvedButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                approvedButton.setDisabled(true);
-                if (currentPerson.isValid()) money += MathUtils.random(4, 7);
-                else money -= MathUtils.random(4, 7);
-                if (currentPerson != null) currentPerson.setState(1);
+                if (previuosPerson != currentPerson) {
+                    if (currentPerson.isValid()) {
+                        int moneyDelta = MathUtils.random(4, 7);
+                        history.addNewPerson(true,"",moneyDelta);
+                        money += moneyDelta;
+                        reasonToDecline.setText("");
+                    }
+                    else {
+                        int moneyDelta = MathUtils.random(8, 12);
+                        money -= moneyDelta;
+                        reasonToDeclineText = currentPerson.getReasonToDecline();
+                        history.addNewPerson(true,reasonToDeclineText,-moneyDelta);
+                        reasonToDecline.setText(reasonToDeclineText);
+                    }
+                    if (currentPerson != null) currentPerson.setState(1);
 
-                if (Assets.record < money) {
-                    Assets.record = money;
+                    previuosPerson = currentPerson;
+
+                    if (money < 0) {
+                        money = 0;
+                    }
+
+                    if (Assets.record < money) {
+                        Assets.record = money;
+                    }
+                    recordsText = "Очки: " + money + "\nРекорд: " + Assets.record;
+                    records.setText(recordsText);
                 }
-                recordsText = "Очки: " + money + "\nРекорд: " + Assets.record;
-                records.setText(recordsText);
             }
         });
         TextButton discardButton = new TextButton("Отклонить", Assets.buttonSkin, "default");
         discardButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                discardButton.setDisabled(true);
-                if (!currentPerson.isValid()) money += MathUtils.random(4, 7);
-                else money -= MathUtils.random(4, 7);
-                if (currentPerson != null) currentPerson.setState(-1);
+                if (previuosPerson != currentPerson){
+                    if (!currentPerson.isValid()) {
+                        int moneyDelta = MathUtils.random(4, 7);
+                        money += moneyDelta;
+                        history.addNewPerson(false,"",moneyDelta);
+                        reasonToDecline.setText("");
+                    }
+                    else {
+                        int moneyDelta = MathUtils.random(8, 12);
+                        money -= moneyDelta;
+                        reasonToDeclineText = currentPerson.getReasonToDecline();
+                        history.addNewPerson(false,reasonToDeclineText,-moneyDelta);
+                        reasonToDecline.setText(reasonToDeclineText);
+                    }
+                    if (currentPerson != null) currentPerson.setState(-1);
 
-                if (Assets.record < money) {
-                    Assets.record = money;
+                    previuosPerson = currentPerson;
+
+                    if (money < 0) {
+                        money = 0;
+                    }
+
+                    if (Assets.record < money) {
+                        Assets.record = money;
+                    }
+                    recordsText = "Очки: " + money + "\nРекорд: " + Assets.record;
+                    records.setText(recordsText);
                 }
-                recordsText = "Очки: " + money + "\nРекорд: " + Assets.record;
-                records.setText(recordsText);
             }
         });
 
@@ -163,6 +211,8 @@ public class WorkScreen implements Screen {
         gameStage.addActor(guideBook);
         gameStage.addActor(guideBook.returnButtons());
         gameStage.setDebugAll(true);
+
+        gameStage.addActor(history);
     }
 
     protected void updateGameStage() {
@@ -177,14 +227,15 @@ public class WorkScreen implements Screen {
         gameStage.addActor(guideBook);
         gameStage.addActor(guideBook.returnButtons());
         gameStage.setDebugAll(true);
+        gameStage.addActor(history);
     }
 
     public void setInputProcessor() {
         if (isPaused) {
-            Gdx.input.setInputProcessor(pauseStage);
+            game.setUpInputProcessor(pauseStage);
         }
         else {
-            Gdx.input.setInputProcessor(gameStage);
+            game.setUpInputProcessor(gameStage);
         }
     }
 
@@ -216,6 +267,7 @@ public class WorkScreen implements Screen {
             gameStage.getBatch().begin();
             records.render(gameStage.getBatch(), 1);
             date.render(gameStage.getBatch(), 1);
+            reasonToDecline.render(gameStage.getBatch(), 1);
             gameStage.getBatch().end();
         }
     }

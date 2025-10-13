@@ -1,7 +1,9 @@
 package com.github.documents_please;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.github.documents_please.resources.Assets;
 import com.github.documents_please.screens.MenuScreen;
 import com.github.documents_please.screens.WorkScreen;
@@ -35,6 +37,10 @@ public class MainGame extends Game {
         }
         setScreen(gameScreen);
         gameScreen.setInputProcessor();
+    }
+
+    public void setUpInputProcessor(Stage stage) {
+        Gdx.input.setInputProcessor(stage);
     }
 
     @Override

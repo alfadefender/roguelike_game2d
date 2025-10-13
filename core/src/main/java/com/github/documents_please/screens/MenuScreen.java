@@ -55,7 +55,7 @@ public class MenuScreen implements Screen {
 
         mainMenuButtonsStage.addActor(background);
         mainMenuButtonsStage.addActor(buttonsTable);
-        mainMenuButtonsStage.setDebugAll(true);
+//        mainMenuButtonsStage.setDebugAll(true);
 
         setInputProcessor();
     }

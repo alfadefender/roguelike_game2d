@@ -34,6 +34,7 @@ public class Person extends Actor {
     protected int state;
 
     protected boolean isValid;
+    protected String reasonToDecline;
 
 
     public Person(Animation<AtlasRegion> animationIdle, Animation<AtlasRegion> animationWalkIn,
@@ -58,6 +59,7 @@ public class Person extends Actor {
 
         state = 0;
         isValid = true;
+        reasonToDecline = "Документы без ошибок";
     }
 
     public boolean isQuited() {
@@ -75,6 +77,14 @@ public class Person extends Actor {
 
     public void setIsValid(boolean isValid) {
         this.isValid = isValid;
+    }
+
+    public void setReasonToDecline(String reasonToDecline) {
+        this.reasonToDecline = reasonToDecline;
+    }
+
+    public String getReasonToDecline() {
+        return reasonToDecline;
     }
 
     public void changePersonAnim() {
@@ -127,4 +137,5 @@ public class Person extends Actor {
         vaccination = new VaccinationCertificate(stampVaccination, nameVaccination, surnameVaccination,
                                                 diseaseVaccination, dateVaccination);
     }
+
 }
