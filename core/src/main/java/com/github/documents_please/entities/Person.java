@@ -59,7 +59,7 @@ public class Person extends Actor {
 
         state = 0;
         isValid = true;
-        reasonToDecline = "Документы без ошибок";
+        reasonToDecline = "Документы  без  ошибок";
     }
 
     public boolean isQuited() {

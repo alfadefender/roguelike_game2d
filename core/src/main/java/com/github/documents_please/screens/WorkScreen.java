@@ -78,7 +78,7 @@ public class WorkScreen implements Screen {
         reasonToDecline = new DocumentText(reasonToDeclineText,
             new Label.LabelStyle(Assets.mainFont, new Color(1, 1, 0, 1)), 100, 260);
 
-        history = new History(Assets.historyTextureIcon,Assets.historyTexture, 1750, 400, 500, 0);
+        history = new History(Assets.historyTextureIcon, Assets.historyTexture, 375, 40, 500, 0);
 
         // собираем меню паузы
         setUpPauseMenu(buttonGeneralSize, buttonSmallSize, screenResolution);
@@ -140,7 +140,7 @@ public class WorkScreen implements Screen {
                         int moneyDelta = MathUtils.random(8, 12);
                         money -= moneyDelta;
                         reasonToDeclineText = currentPerson.getReasonToDecline();
-                        history.addNewPerson(true,reasonToDeclineText,-moneyDelta);
+                        history.addNewPerson(true, reasonToDeclineText, -moneyDelta);
                         reasonToDecline.setText(reasonToDeclineText);
                     }
                     if (currentPerson != null) currentPerson.setState(1);
@@ -174,7 +174,7 @@ public class WorkScreen implements Screen {
                         int moneyDelta = MathUtils.random(8, 12);
                         money -= moneyDelta;
                         reasonToDeclineText = currentPerson.getReasonToDecline();
-                        history.addNewPerson(false,reasonToDeclineText,-moneyDelta);
+                        history.addNewPerson(false, reasonToDeclineText, -moneyDelta);
                         reasonToDecline.setText(reasonToDeclineText);
                     }
                     if (currentPerson != null) currentPerson.setState(-1);
@@ -210,9 +210,8 @@ public class WorkScreen implements Screen {
         }
         gameStage.addActor(guideBook);
         gameStage.addActor(guideBook.returnButtons());
-        gameStage.setDebugAll(true);
-
         gameStage.addActor(history);
+//        gameStage.setDebugAll(true);
     }
 
     protected void updateGameStage() {
@@ -226,8 +225,8 @@ public class WorkScreen implements Screen {
         }
         gameStage.addActor(guideBook);
         gameStage.addActor(guideBook.returnButtons());
-        gameStage.setDebugAll(true);
         gameStage.addActor(history);
+//        gameStage.setDebugAll(true);
     }
 
     public void setInputProcessor() {
@@ -263,12 +262,12 @@ public class WorkScreen implements Screen {
             gameStage.getBatch().begin();
             gameStage.getBatch().draw(Assets.backgroundGame, 0, 0);
             gameStage.getBatch().end();
-            gameStage.draw();
             gameStage.getBatch().begin();
             records.render(gameStage.getBatch(), 1);
             date.render(gameStage.getBatch(), 1);
             reasonToDecline.render(gameStage.getBatch(), 1);
             gameStage.getBatch().end();
+            gameStage.draw();
         }
     }
 

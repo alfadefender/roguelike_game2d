@@ -23,7 +23,7 @@ public class History extends Document {
         numberOfPerson = 26;
         personsList = new LinkedList<>();
         personsText = new DocumentText("",
-            new Label.LabelStyle(Assets.mainFont, new Color(0, 0, 0, 1)), x+30, 30);
+            new Label.LabelStyle(Assets.mainFont, new Color(0, 0, 0, 1)), x+15, y + 10);
     }
 
     public void addNewPerson(boolean action, String result, int money){
@@ -44,9 +44,12 @@ public class History extends Document {
 
     protected void updatePersonText(){
         String tempString = "";
+        int tempIdx = 0;
         for (String item : personsList) {
-            tempString = tempString + "\n" + item ;
+            tempString += "\n" + item ;
+            tempIdx++;
         }
+        if (numberOfPerson - tempIdx > 0) tempString += "\n".repeat(numberOfPerson - tempIdx);
         personsText.setText(tempString);
     }
 
